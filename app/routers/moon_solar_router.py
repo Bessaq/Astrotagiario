@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from kerykeion import AstrologicalSubject
 from app.security import verify_api_key
 from app.utils.astro_helpers import create_subject
+from app.models import NatalChartRequest
 from typing import List, Dict
 from pydantic import BaseModel, Field
 from datetime import datetime, timedelta
@@ -92,11 +93,17 @@ def calculate_solar_return(birth_year: int, birth_month: int, birth_day: int,
     """
     try:
         # Criar subject natal para obter posição do Sol
-        natal_subject = create_subject({
-            'year': birth_year, 'month': birth_month, 'day': birth_day,
-            'hour': birth_hour, 'minute': birth_minute,
-            'latitude': lat, 'longitude': lng, 'tz_str': tz_str
-        }, "Natal")
+        natal_data = NatalChartRequest(
+            year=birth_year,
+            month=birth_month,
+            day=birth_day,
+            hour=birth_hour,
+            minute=birth_minute,
+            latitude=lat,
+            longitude=lng,
+            tz_str=tz_str,
+        )
+        natal_subject = create_subject(natal_data, "Natal")
 
         natal_sun_pos = natal_subject.sun.position
 
@@ -108,11 +115,17 @@ def calculate_solar_return(birth_year: int, birth_month: int, birth_day: int,
             next_birthday = datetime(current_year + 1, birth_month, birth_day)
 
         # Criar subject para o retorno solar (aproximado)
-        sr_subject = create_subject({
-            'year': next_birthday.year, 'month': next_birthday.month, 'day': next_birthday.day,
-            'hour': birth_hour, 'minute': birth_minute,
-            'latitude': lat, 'longitude': lng, 'tz_str': tz_str
-        }, "Solar Return")
+        sr_data = NatalChartRequest(
+            year=next_birthday.year,
+            month=next_birthday.month,
+            day=next_birthday.day,
+            hour=birth_hour,
+            minute=birth_minute,
+            latitude=lat,
+            longitude=lng,
+            tz_str=tz_str,
+        )
+        sr_subject = create_subject(sr_data, "Solar Return")
 
         # Gerar destaques baseados nas posições planetárias
         highlights = []
