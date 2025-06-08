@@ -10,7 +10,7 @@ class HouseSystem(str, Enum):
     CAMPANUS = "campanus"
     EQUAL = "equal"
     WHOLE_SIGN = "whole_sign"
-    
+
 # Mapeamento de sistemas de casas para identificadores do Kerykeion
 HOUSE_SYSTEM_MAP = {
     "placidus": "P",
@@ -62,7 +62,7 @@ class SVGCombinedChartRequest(BaseModel):
     """
     natal_chart: NatalChartRequest = Field(..., description="Dados do mapa natal")
     transit_chart: TransitRequest = Field(..., description="Dados do trânsito")
-    
+
     class Config:
         schema_extra = {
             "example": {
@@ -196,3 +196,21 @@ class SVGChartRequest(BaseModel):
             }
         }
 
+# Modelos para Sinastria
+class SynastryRequest(BaseModel):
+    person1: NatalChartRequest = Field(..., description="Dados da primeira pessoa")
+    person2: NatalChartRequest = Field(..., description="Dados da segunda pessoa")
+
+class SynastryAspect(BaseModel):
+    p1_planet: str
+    p2_planet: str
+    aspect_name: str
+    orb: float
+    aspect_type: str  # "harmonic", "tense", "neutral"
+
+class SynastryResponse(BaseModel):
+    person1_data: NatalChartRequest
+    person2_data: NatalChartRequest
+    aspects: List[SynastryAspect]
+    compatibility_score: float
+    summary: str

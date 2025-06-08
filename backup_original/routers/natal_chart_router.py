@@ -20,7 +20,7 @@ async def create_natal_chart(request: NatalChartRequest):
     try:
         # Usar a função utilitária para criar o subject
         subject = create_subject(request, request.name if request.name else "NatalChart")
-        
+
         # Dicionário para armazenar os planetas
         planets_dict: Dict[str, PlanetData] = {}
         for k_name, api_name in PLANETS_MAP.items():
@@ -38,7 +38,7 @@ async def create_natal_chart(request: NatalChartRequest):
                     house=int(planet_data.house_name.split("_")[0]) if "_" in planet_data.house_name else 1,
                     retrograde=planet_data.retrograde
                 )
-        
+
         if hasattr(subject, 'chiron') and subject.chiron:
             chiron_data = get_planet_data(subject, 'chiron', 'Chiron')
             if chiron_data:
@@ -53,7 +53,7 @@ async def create_natal_chart(request: NatalChartRequest):
                     house=int(chiron_data.house_name.split("_")[0]) if "_" in chiron_data.house_name else 1,
                     retrograde=chiron_data.retrograde
                 )
-        
+
         if hasattr(subject, 'lilith') and subject.lilith and subject.lilith.name:
             planets_dict['lilith'] = PlanetData(
                 name="Lilith",
@@ -92,7 +92,7 @@ async def create_natal_chart(request: NatalChartRequest):
             sign_num=getattr(subject.first_house, 'sign_num', 1),
             longitude=round(subject.first_house.position, 4)
         )
-        
+
         midheaven = HouseCuspData(
             number=10,
             sign=subject.tenth_house.sign,
@@ -130,7 +130,7 @@ async def create_natal_chart(request: NatalChartRequest):
                         applying=False  # Valor padrão, não disponível diretamente
                     ))
                     processed_aspects.add(pair)
-        
+
         # Criar o objeto de resposta
         response = NatalChartResponse(
             input_data=request,
@@ -142,7 +142,7 @@ async def create_natal_chart(request: NatalChartRequest):
             house_system=request.house_system,
             interpretations=None
         )
-        
+
         return response
 
     except Exception as e:

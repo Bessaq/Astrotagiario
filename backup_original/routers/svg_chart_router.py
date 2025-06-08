@@ -12,7 +12,7 @@ from typing import Dict, Literal
 
 router = APIRouter(prefix="/api/v1", tags=["svg_charts"], dependencies=[Depends(verify_api_key)])
 
-@router.post("/svg_chart", 
+@router.post("/svg_chart",
              response_class=Response,
              responses={
                  200: {
@@ -26,11 +26,11 @@ async def generate_svg_chart(data: SVGChartRequest):
     """Gera um gráfico SVG para um mapa natal, trânsito ou combinação."""
     try:
         natal_subject = create_subject(data.natal_chart, "Natal Chart")
-        
+
         transit_subject = None
         if data.transit_chart and (data.chart_type == "transit" or data.chart_type == "combined"):
             transit_subject = create_subject(data.transit_chart, "Transit")
-        
+
         # Mapear o tipo de gráfico para o formato esperado pelo KerykeionChartSVG
         chart_type_map = {
             "natal": "Natal",
@@ -90,7 +90,7 @@ async def generate_svg_chart(data: SVGChartRequest):
         # Ler o conteúdo do arquivo SVG gerado
         with open(svg_file_path, 'r') as svg_file:
             svg_content = svg_file.read()
-            
+
         # Remover o arquivo temporário após leitura
         try:
             os.remove(svg_file_path)
@@ -112,7 +112,7 @@ async def generate_svg_chart(data: SVGChartRequest):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Erro interno ao gerar gráfico SVG: {type(e).__name__}")
 
-@router.post("/svg_chart_base64", 
+@router.post("/svg_chart_base64",
              response_model=Dict[str, str],
              summary="Gera gráfico SVG em Base64",
              description="Gera um gráfico SVG e retorna como string base64, útil para incorporação em aplicações web.")
@@ -134,7 +134,7 @@ async def generate_svg_chart_base64(data: SVGChartRequest):
 
         # Converter para base64
         base64_svg = base64.b64encode(svg_content_bytes).decode("utf-8")
-        
+
         # Retornar como JSON
         return {
             "svg_base64": base64_svg,
