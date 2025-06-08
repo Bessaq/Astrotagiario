@@ -1,0 +1,279 @@
+{
+  "custom_tools": [
+    {
+      "name": "astro-natal-chart",
+      "description": "Calcula mapa natal completo com planetas, casas e aspectos",
+      "endpoint": {
+        "method": "POST",
+        "url": "https://toamao-production.up.railway.app/api/v1/natal_chart",
+        "authentication": {
+          "type": "apiKey",
+          "header": "X-API-KEY",
+          "value": "testapikey"
+        }
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Nome da pessoa",
+          "required": false
+        },
+        {
+          "name": "year",
+          "type": "integer",
+          "description": "Ano de nascimento",
+          "required": true
+        },
+        {
+          "name": "month",
+          "type": "integer",
+          "description": "Mês de nascimento (1-12)",
+          "required": true
+        },
+        {
+          "name": "day",
+          "type": "integer", 
+          "description": "Dia de nascimento",
+          "required": true
+        },
+        {
+          "name": "hour",
+          "type": "integer",
+          "description": "Hora de nascimento (0-23)",
+          "required": true
+        },
+        {
+          "name": "minute",
+          "type": "integer",
+          "description": "Minuto de nascimento (0-59)",
+          "required": true
+        },
+        {
+          "name": "latitude",
+          "type": "number",
+          "description": "Latitude do local de nascimento",
+          "required": true
+        },
+        {
+          "name": "longitude",
+          "type": "number",
+          "description": "Longitude do local de nascimento", 
+          "required": true
+        },
+        {
+          "name": "tz_str",
+          "type": "string",
+          "description": "Timezone (ex: America/Fortaleza)",
+          "required": true
+        },
+        {
+          "name": "house_system",
+          "type": "string",
+          "description": "Sistema de casas (placidus, koch, etc)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "astro-synastry",
+      "description": "Calcula compatibilidade entre dois mapas natais",
+      "endpoint": {
+        "method": "POST",
+        "url": "https://toamao-production.up.railway.app/api/v1/synastry",
+        "authentication": {
+          "type": "apiKey",
+          "header": "X-API-KEY",
+          "value": "testapikey"
+        }
+      },
+      "parameters": [
+        {
+          "name": "person1",
+          "type": "object",
+          "description": "Dados da primeira pessoa",
+          "required": true,
+          "properties": {
+            "name": {"type": "string"},
+            "year": {"type": "integer"},
+            "month": {"type": "integer"},
+            "day": {"type": "integer"},
+            "hour": {"type": "integer"},
+            "minute": {"type": "integer"},
+            "latitude": {"type": "number"},
+            "longitude": {"type": "number"},
+            "tz_str": {"type": "string"}
+          }
+        },
+        {
+          "name": "person2",
+          "type": "object",
+          "description": "Dados da segunda pessoa",
+          "required": true,
+          "properties": {
+            "name": {"type": "string"},
+            "year": {"type": "integer"},
+            "month": {"type": "integer"},
+            "day": {"type": "integer"},
+            "hour": {"type": "integer"},
+            "minute": {"type": "integer"},
+            "latitude": {"type": "number"},
+            "longitude": {"type": "number"},
+            "tz_str": {"type": "string"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "astro-transits-to-natal",
+      "description": "Calcula aspectos entre trânsitos atuais e mapa natal",
+      "endpoint": {
+        "method": "POST",
+        "url": "https://toamao-production.up.railway.app/api/v1/transits_to_natal",
+        "authentication": {
+          "type": "apiKey",
+          "header": "X-API-KEY",
+          "value": "testapikey"
+        }
+      },
+      "parameters": [
+        {
+          "name": "natal_data",
+          "type": "object",
+          "description": "Dados do mapa natal",
+          "required": true
+        },
+        {
+          "name": "transit_data",
+          "type": "object",
+          "description": "Dados do trânsito",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "astro-current-transits",
+      "description": "Calcula posições planetárias atuais",
+      "endpoint": {
+        "method": "POST",
+        "url": "https://toamao-production.up.railway.app/api/v1/current_transits",
+        "authentication": {
+          "type": "apiKey",
+          "header": "X-API-KEY",
+          "value": "testapikey"
+        }
+      },
+      "parameters": [
+        {
+          "name": "year",
+          "type": "integer",
+          "description": "Ano do trânsito",
+          "required": true
+        },
+        {
+          "name": "month",
+          "type": "integer",
+          "description": "Mês do trânsito (1-12)",
+          "required": true
+        },
+        {
+          "name": "day",
+          "type": "integer",
+          "description": "Dia do trânsito",
+          "required": true
+        },
+        {
+          "name": "hour",
+          "type": "integer",
+          "description": "Hora do trânsito (0-23)",
+          "required": true
+        },
+        {
+          "name": "minute",
+          "type": "integer",
+          "description": "Minuto do trânsito (0-59)",
+          "required": true
+        },
+        {
+          "name": "latitude",
+          "type": "number",
+          "description": "Latitude do local",
+          "required": true
+        },
+        {
+          "name": "longitude",
+          "type": "number",
+          "description": "Longitude do local",
+          "required": true
+        },
+        {
+          "name": "tz_str",
+          "type": "string",
+          "description": "Timezone",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "astro-chart-svg",
+      "description": "Gera gráfico SVG do mapa natal",
+      "endpoint": {
+        "method": "POST",
+        "url": "https://toamao-production.up.railway.app/api/v1/svg_chart",
+        "authentication": {
+          "type": "apiKey",
+          "header": "X-API-KEY",
+          "value": "testapikey"
+        }
+      },
+      "parameters": [
+        {
+          "name": "natal_chart",
+          "type": "object",
+          "description": "Dados do mapa natal",
+          "required": true
+        },
+        {
+          "name": "chart_type",
+          "type": "string",
+          "description": "Tipo de gráfico (natal, transit)",
+          "required": true
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Tema visual",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "astro-combined-chart-svg",
+      "description": "Gera gráfico SVG combinado de natal e trânsitos",
+      "endpoint": {
+        "method": "POST",
+        "url": "https://toamao-production.up.railway.app/api/v1/svg_combined_chart",
+        "authentication": {
+          "type": "apiKey",
+          "header": "X-API-KEY",
+          "value": "testapikey"
+        }
+      },
+      "parameters": [
+        {
+          "name": "natal_chart",
+          "type": "object",
+          "description": "Dados do mapa natal",
+          "required": true
+        },
+        {
+          "name": "transit_chart",
+          "type": "object",
+          "description": "Dados do trânsito",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
+
