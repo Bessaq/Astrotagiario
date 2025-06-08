@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from kerykeion import AstrologicalSubject
-from app.models import SynastryRequest
+from app.models import SynastryRequest, NatalChartRequest
 from app.security import verify_api_key
 from app.utils.astro_helpers import create_subject
 from typing import List, Dict
@@ -26,8 +26,11 @@ def calculate_synastry_detailed(person1_data, person2_data) -> Dict:
     """Calcula sinastria detalhada para relatório PDF."""
     try:
         # Criar subjects para ambas as pessoas
-        subject1 = create_subject(person1_data, person1_data.get('name', 'Person 1'))
-        subject2 = create_subject(person2_data, person2_data.get('name', 'Person 2'))
+        p1_request = NatalChartRequest(**person1_data)
+        p2_request = NatalChartRequest(**person2_data)
+
+        subject1 = create_subject(p1_request, p1_request.name or "Person 1")
+        subject2 = create_subject(p2_request, p2_request.name or "Person 2")
 
         # Planetas principais para análise
         main_planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto']
