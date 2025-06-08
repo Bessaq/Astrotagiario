@@ -10,7 +10,7 @@ class HouseSystem(str, Enum):
     CAMPANUS = "campanus"
     EQUAL = "equal"
     WHOLE_SIGN = "whole_sign"
-    
+
 # Mapeamento de sistemas de casas para identificadores do Kerykeion
 HOUSE_SYSTEM_MAP = {
     "placidus": "P",
@@ -27,7 +27,7 @@ class PlanetPosition(BaseModel):
     sign_num: int
     position: float
     abs_pos: float
-    house_number: int # Changed from house_name: str
+    house_name: str
     speed: float = 0.0
     retrograde: bool = False
 
@@ -62,7 +62,7 @@ class SVGCombinedChartRequest(BaseModel):
     """
     natal_chart: NatalChartRequest = Field(..., description="Dados do mapa natal")
     transit_chart: TransitRequest = Field(..., description="Dados do trânsito")
-    
+
     class Config:
         schema_extra = {
             "example": {

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import natal_chart_router, svg_combined_chart_router, synastry_router, daily_weekly_transits_router, moon_solar_router, synastry_pdf_router
+from app.routers import natal_chart_router, transit_router, svg_chart_router, svg_combined_chart_router, synastry_router, daily_weekly_transits_router, moon_solar_router, synastry_pdf_router, webhook_router
 from app.exceptions import add_exception_handlers
 import uvicorn
 import os
@@ -22,11 +22,14 @@ add_exception_handlers(app)
 
 # Incluir os routers
 app.include_router(natal_chart_router.router)
+app.include_router(transit_router.router)
+app.include_router(svg_chart_router.router) # Adicionando o router SVG
 app.include_router(svg_combined_chart_router.router) # Adicionando o router SVG combinado
 app.include_router(synastry_router.router) # Adicionando o router de sinastria
 app.include_router(daily_weekly_transits_router.router) # Adicionando o router de trânsitos diários/semanais
 app.include_router(moon_solar_router.router) # Adicionando o router de lua e retorno solar
 app.include_router(synastry_pdf_router.router) # Adicionando o router de sinastria PDF
+app.include_router(webhook_router.router)
 
 @app.get("/", tags=["Root"], summary="Endpoint raiz da API")
 async def read_root():
@@ -37,7 +40,7 @@ if __name__ == "__main__":
     # Certifique-se de que o Uvicorn está instalado: pip install uvicorn[standard]
     # Para executar: python app/main.py (estando no diretório astrologia_api)
     # Ou, mais comumente: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-    
+
     # Para o ambiente de desenvolvimento, rodar via CLI é geralmente melhor por causa do --reload.
     # Esta seção __main__ é mais para conveniência de teste rápido ou se não quiser usar o CLI.
     # uvicorn.run(app, host="0.0.0.0", port=8000) # Comentado para preferir execução via CLI

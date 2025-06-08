@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from kerykeion import AstrologicalSubject
 from app.models import (
-    TransitRequest, CurrentTransitsResponse, 
-    TransitsToNatalRequest, TransitsToNatalResponse, 
+    TransitRequest, CurrentTransitsResponse,
+    TransitsToNatalRequest, TransitsToNatalResponse,
     PlanetPosition, TransitAspect, NatalChartRequest
 )
 from app.security import verify_api_key
@@ -20,13 +20,13 @@ async def get_current_transits(request: TransitRequest):
     try:
         # Usar a função utilitária para criar o subject
         transit_subject = create_subject(request, "CurrentTransits")
-        
+
         transit_planets: List[PlanetPosition] = []
         for k_name, api_name in PLANETS_MAP.items():
             planet_data = get_planet_data(transit_subject, k_name, api_name)
             if planet_data:
                 transit_planets.append(planet_data)
-        
+
         if hasattr(transit_subject, 'chiron') and transit_subject.chiron:
             chiron_data = get_planet_data(transit_subject, 'chiron', 'Chiron')
             if chiron_data: transit_planets.append(chiron_data)
@@ -51,7 +51,7 @@ async def get_current_transits(request: TransitRequest):
 async def get_transits_to_natal(request: TransitsToNatalRequest):
     try:
         # Usar a função utilitária para criar os subjects
-        natal_subject = create_subject(request.natal_data, 
+        natal_subject = create_subject(request.natal_data,
                                       request.natal_data.name if request.natal_data.name else "NatalChart")
         transit_subject = create_subject(request.transit_data, "TransitChart")
 
@@ -60,30 +60,30 @@ async def get_transits_to_natal(request: TransitsToNatalRequest):
             planet_data = get_planet_data(transit_subject, k_name, api_name)
             if planet_data:
                 transit_planets_positions.append(planet_data)
-        
+
         if hasattr(transit_subject, 'chiron') and transit_subject.chiron:
             chiron_data = get_planet_data(transit_subject, 'chiron', 'Chiron')
             if chiron_data: transit_planets_positions.append(chiron_data)
-        
+
         # Calcular aspectos manualmente já que get_aspects_to não está disponível na versão atual
         aspects_to_natal: List[TransitAspect] = []
-        
+
         # Planetas natais para verificar aspectos
         natal_planets = [
-            natal_subject.sun, natal_subject.moon, natal_subject.mercury, 
-            natal_subject.venus, natal_subject.mars, natal_subject.jupiter, 
-            natal_subject.saturn, natal_subject.uranus, natal_subject.neptune, 
+            natal_subject.sun, natal_subject.moon, natal_subject.mercury,
+            natal_subject.venus, natal_subject.mars, natal_subject.jupiter,
+            natal_subject.saturn, natal_subject.uranus, natal_subject.neptune,
             natal_subject.pluto
         ]
-        
+
         # Planetas de trânsito para verificar aspectos
         transit_planets = [
-            transit_subject.sun, transit_subject.moon, transit_subject.mercury, 
-            transit_subject.venus, transit_subject.mars, transit_subject.jupiter, 
-            transit_subject.saturn, transit_subject.uranus, transit_subject.neptune, 
+            transit_subject.sun, transit_subject.moon, transit_subject.mercury,
+            transit_subject.venus, transit_subject.mars, transit_subject.jupiter,
+            transit_subject.saturn, transit_subject.uranus, transit_subject.neptune,
             transit_subject.pluto
         ]
-        
+
         # Definir aspectos e suas orbes
         aspect_types = {
             "Conjunction": (0, 8),    # (graus, orbe máxima)
@@ -98,21 +98,21 @@ async def get_transits_to_natal(request: TransitsToNatalRequest):
             "Quintile": (72, 2),
             "Bi-Quintile": (144, 2)
         }
-        
+
         # Calcular aspectos entre planetas natais e de trânsito
         for natal_planet in natal_planets:
             if not natal_planet or not hasattr(natal_planet, 'abs_pos'):
                 continue
-                
+
             for transit_planet in transit_planets:
                 if not transit_planet or not hasattr(transit_planet, 'abs_pos'):
                     continue
-                    
+
                 # Calcular diferença entre posições
                 diff = abs(natal_planet.abs_pos - transit_planet.abs_pos)
                 if diff > 180:
                     diff = 360 - diff
-                
+
                 # Verificar se forma algum aspecto
                 for aspect_name, (aspect_angle, max_orb) in aspect_types.items():
                     orb = abs(diff - aspect_angle)
