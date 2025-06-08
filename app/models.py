@@ -27,7 +27,7 @@ class PlanetPosition(BaseModel):
     sign_num: int
     position: float
     abs_pos: float
-    house_name: str
+    house_number: int # Changed from house_name: str
     speed: float = 0.0
     retrograde: bool = False
 
@@ -196,3 +196,21 @@ class SVGChartRequest(BaseModel):
             }
         }
 
+# Modelos para Sinastria
+class SynastryRequest(BaseModel):
+    person1: NatalChartRequest = Field(..., description="Dados da primeira pessoa")
+    person2: NatalChartRequest = Field(..., description="Dados da segunda pessoa")
+
+class SynastryAspect(BaseModel):
+    p1_planet: str
+    p2_planet: str
+    aspect_name: str
+    orb: float
+    aspect_type: str  # "harmonic", "tense", "neutral"
+
+class SynastryResponse(BaseModel):
+    person1_data: NatalChartRequest
+    person2_data: NatalChartRequest
+    aspects: List[SynastryAspect]
+    compatibility_score: float
+    summary: str

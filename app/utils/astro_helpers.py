@@ -34,6 +34,25 @@ def create_subject(data: NatalChartRequest | TransitRequest, default_name: str) 
         houses_system_identifier=house_system_code
     )
 
+def get_house_from_kerykeion_attribute(planet_obj) -> int:
+    """
+    Extrai o número da casa do atributo 'house' do Kerykeion.
+    """
+    try:
+        if hasattr(planet_obj, 'house'):
+            house_str = str(planet_obj.house)
+            # Mapear nomes das casas para números (formato exato do Kerykeion)
+            house_mapping = {
+                'First_House': 1, 'Second_House': 2, 'Third_House': 3, 'Fourth_House': 4,
+                'Fifth_House': 5, 'Sixth_House': 6, 'Seventh_House': 7, 'Eighth_House': 8,
+                'Ninth_House': 9, 'Tenth_House': 10, 'Eleventh_House': 11, 'Twelfth_House': 12
+            }
+            return house_mapping.get(house_str, 1)
+        return 1
+    except Exception as e:
+        # Consider logging the exception e if a logging setup is available
+        return 1
+
 def get_planet_data(subject: AstrologicalSubject, planet_name_kerykeion: str, api_planet_name: str) -> Optional[PlanetPosition]:
     """
     Extrai dados de um planeta do objeto AstrologicalSubject.
@@ -55,7 +74,7 @@ def get_planet_data(subject: AstrologicalSubject, planet_name_kerykeion: str, ap
                 sign_num=p.sign_num,
                 position=round(p.position, 4),
                 abs_pos=round(p.abs_pos, 4),
-                house_name=p.house_name if hasattr(p, 'house_name') else "N/A",
+                house_number=get_house_from_kerykeion_attribute(p), # Changed from house_name
                 speed=round(p.speed, 4) if hasattr(p, 'speed') else 0.0,
                 retrograde=p.retrograde if hasattr(p, 'retrograde') else False
             )

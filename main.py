@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import natal_chart_router, transit_router, svg_chart_router, svg_combined_chart_router, daily_weekly_transits_router, moon_solar_router, webhook_router
+from app.routers import natal_chart_router, svg_combined_chart_router, synastry_router, daily_weekly_transits_router, moon_solar_router, synastry_pdf_router
 from app.exceptions import add_exception_handlers
 import uvicorn
 import os
@@ -22,12 +22,11 @@ add_exception_handlers(app)
 
 # Incluir os routers
 app.include_router(natal_chart_router.router)
-app.include_router(transit_router.router)
-app.include_router(svg_chart_router.router) # Adicionando o router SVG
 app.include_router(svg_combined_chart_router.router) # Adicionando o router SVG combinado
+app.include_router(synastry_router.router) # Adicionando o router de sinastria
 app.include_router(daily_weekly_transits_router.router) # Adicionando o router de trânsitos diários/semanais
 app.include_router(moon_solar_router.router) # Adicionando o router de lua e retorno solar
-app.include_router(webhook_router.router)
+app.include_router(synastry_pdf_router.router) # Adicionando o router de sinastria PDF
 
 @app.get("/", tags=["Root"], summary="Endpoint raiz da API")
 async def read_root():
