@@ -6,7 +6,12 @@ from app.models import (
     PlanetPosition, TransitAspect, NatalChartRequest
 )
 from app.security import verify_api_key
-from app.utils.astro_helpers import create_subject, get_planet_data, PLANETS_MAP
+from app.utils.astro_helpers import (
+    create_subject,
+    get_planet_data,
+    PLANETS_MAP,
+    get_house_from_kerykeion_attribute,
+)
 from typing import List, Optional
 
 router = APIRouter(
@@ -33,9 +38,14 @@ async def get_current_transits(request: TransitRequest):
 
         if hasattr(transit_subject, 'lilith') and transit_subject.lilith and transit_subject.lilith.name:
             lilith_data = PlanetPosition(
-                name="Lilith", sign=transit_subject.lilith.sign, sign_num=transit_subject.lilith.sign_num,
-                position=round(transit_subject.lilith.position,4), abs_pos=round(transit_subject.lilith.abs_pos,4),
-                house_name=transit_subject.lilith.house_name, speed=0.0, retrograde=False
+                name="Lilith",
+                sign=transit_subject.lilith.sign,
+                sign_num=transit_subject.lilith.sign_num,
+                position=round(transit_subject.lilith.position, 4),
+                abs_pos=round(transit_subject.lilith.abs_pos, 4),
+                house_number=get_house_from_kerykeion_attribute(transit_subject.lilith),
+                speed=0.0,
+                retrograde=False,
             )
             transit_planets.append(lilith_data)
 
