@@ -35,7 +35,7 @@ async def create_natal_chart(request: NatalChartRequest):
                     sign=planet_data.sign,
                     sign_original=planet_data.sign,
                     sign_num=planet_data.sign_num,
-                    house=int(planet_data.house_name.split("_")[0]) if "_" in planet_data.house_name else 1,
+                    house=planet_data.house_number,
                     retrograde=planet_data.retrograde
                 )
         
@@ -50,7 +50,7 @@ async def create_natal_chart(request: NatalChartRequest):
                     sign=chiron_data.sign,
                     sign_original=chiron_data.sign,
                     sign_num=chiron_data.sign_num,
-                    house=int(chiron_data.house_name.split("_")[0]) if "_" in chiron_data.house_name else 1,
+                    house=chiron_data.house_number,
                     retrograde=chiron_data.retrograde
                 )
         
@@ -63,7 +63,7 @@ async def create_natal_chart(request: NatalChartRequest):
                 sign=subject.lilith.sign,
                 sign_original=subject.lilith.sign,
                 sign_num=subject.lilith.sign_num,
-                house=int(subject.lilith.house_name.split("_")[0]) if hasattr(subject.lilith, 'house_name') and "_" in subject.lilith.house_name else 1,
+                house=subject.lilith.house_number,
                 retrograde=False
             )
 
