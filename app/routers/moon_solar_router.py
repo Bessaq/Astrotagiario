@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from kerykeion import AstrologicalSubject
 from app.security import verify_api_key
-from app.utils.astro_helpers import create_subject
+from app.utils.astro_helpers import create_subject, get_house_from_kerykeion_attribute
 from app.models import NatalChartRequest
 from typing import List, Dict
 from pydantic import BaseModel, Field
@@ -140,7 +140,7 @@ def calculate_solar_return(birth_year: int, birth_month: int, birth_day: int,
 
         # Analisar planetas em destaque
         if hasattr(sr_subject, 'mars'):
-            mars_house = sr_subject.mars.house_name.split('_')[0] if '_' in sr_subject.mars.house_name else "1"
+            mars_house = get_house_from_kerykeion_attribute(sr_subject.mars)
             highlights.append(f"Marte na casa {mars_house} - área de ação e energia")
 
         if hasattr(sr_subject, 'venus'):
