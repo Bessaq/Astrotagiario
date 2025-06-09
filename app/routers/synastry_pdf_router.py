@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from kerykeion import AstrologicalSubject
 from app.models import SynastryRequest, NatalChartRequest
 from app.security import verify_api_key
-from app.utils.astro_helpers import create_subject
+from app.utils.astro_helpers import create_subject, get_house_from_kerykeion_attribute
 from typing import List, Dict
 from pydantic import BaseModel, Field
 import tempfile
@@ -47,7 +47,7 @@ def calculate_synastry_detailed(person1_data, person2_data) -> Dict:
                         'name': p1_obj.name,
                         'position': p1_obj.position,
                         'sign': p1_obj.sign,
-                        'house': p1_obj.house_name.split('_')[0] if '_' in p1_obj.house_name else '1'
+                        'house': get_house_from_kerykeion_attribute(p1_obj)
                     }
 
             if hasattr(subject2, planet):
@@ -57,7 +57,7 @@ def calculate_synastry_detailed(person1_data, person2_data) -> Dict:
                         'name': p2_obj.name,
                         'position': p2_obj.position,
                         'sign': p2_obj.sign,
-                        'house': p2_obj.house_name.split('_')[0] if '_' in p2_obj.house_name else '1'
+                        'house': get_house_from_kerykeion_attribute(p2_obj)
                     }
 
         # Calcular aspectos detalhados
@@ -299,9 +299,9 @@ async def generate_synastry_pdf_report(request: SynastryRequest):
     Mesma lógica da sinastria, mas retorna link para relatório em PDF.
     """
     try:
-        # Converter request para dicionários
-        person1_data = request.person1.dict()
-        person2_data = request.person2.dict()
+        # Converter request para dicionários (Pydantic V2)
+        person1_data = request.person1.model_dump()
+        person2_data = request.person2.model_dump()
 
         # Calcular sinastria detalhada
         synastry_data = calculate_synastry_detailed(person1_data, person2_data)

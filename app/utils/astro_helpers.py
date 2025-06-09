@@ -9,7 +9,7 @@ from app.models import (
     HOUSE_SYSTEM_MAP
 )
 
-def create_subject(data: NatalChartRequest | TransitRequest, default_name: str) -> AstrologicalSubject:
+def create_subject(data, default_name: str) -> AstrologicalSubject:
     """
     Cria um objeto AstrologicalSubject a partir dos dados da requisição.
     
@@ -20,7 +20,7 @@ def create_subject(data: NatalChartRequest | TransitRequest, default_name: str) 
     Returns:
         Objeto AstrologicalSubject configurado
     """
-    house_system_code = HOUSE_SYSTEM_MAP.get(data.house_system, "P")
+    house_system_code = HOUSE_SYSTEM_MAP.get(getattr(data, 'house_system', 'placidus'), "P")
     return AstrologicalSubject(
         name=getattr(data, 'name', default_name) or default_name,
         year=data.year,
